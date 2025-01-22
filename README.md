@@ -16,7 +16,7 @@ A modern countdown timer with glowing progress rings, confetti celebrations, and
 ## 🚀 Quick Start
 1. Clone repo:
 ```bash
-git clone https://github.com/YOUR-USERNAME/chrono-nova.git
+git clone https://github.com/yourarnav/time_until.git
 ```
 2. Open `index.html` in any modern browser
 
@@ -73,5 +73,5 @@ Distributed under the MIT License. See `LICENSE` for details.
 
 ---
 
-Made with ❤️ by [Your Name]
-[🔗 Live Demo](link) | [📧 Contact](link) | [🐛 Report Issue](link)
+Made with ❤️ by [Arnav Attri](https://github.com/yourarnav)
+[🔗 Live Demo](https://yourarnav.github.io/time_until) | [📧 Contact](https://github.com/yourarnav) | [🐛 Report Issue](https://github.com/yourarnav/time_until/issues)
