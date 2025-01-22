@@ -1,4 +1,4 @@
-# Chrono Nova ⏳✨ [🔗 Live Demo](https://yourarnav.github.io/time_until) 
+# Chrono Nova ⏳✨ <a href="https://yourarnav.github.io/time_until" target="_blank">🔗 Live Demo</a>
 
 ![Chrono Nova Preview](https://i.imgur.com/psijfqz.png)
 
