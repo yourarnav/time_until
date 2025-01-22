@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chrono Nova</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --background: #0A0A1F;
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --gradient-start: #40E0D0;
+            --gradient-middle: #4169E1;
+            --gradient-end: #0000FF;
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --ring-color: rgba(255, 255, 255, 0.2);
+            --button-bg: rgba(255, 255, 255, 0.1);
+            --container-padding: max(1rem, 3vw);
+            --circle-size: min(160px, 25vw);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--background);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            padding: var(--container-padding);
+        }
+
+        html {
+            height: -webkit-fill-available;
+        }
+
+        .container {
+            width: 100%;
+            max-width: min(900px, 95vw);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: min(2rem, 4vh);
+            padding: min(2rem, 3vw);
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .title {
+            font-size: clamp(2rem, 6vw, 4rem);
+            font-weight: 700;
+            background: linear-gradient(90deg,
+                    var(--gradient-start),
+                    var(--gradient-middle),
+                    var(--gradient-end));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+            width: 100%;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            color: var(--gradient-middle);
+            margin-bottom: min(1rem, 2vh);
+        }
+
+        .countdown-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(140px, calc(50% - 1rem)), 1fr));
+            gap: clamp(0.5rem, 2vw, 2rem);
+            width: 100%;
+            place-items: center;
+            padding: min(1rem, 2vw);
+        }
+
+        .time-segment {
+            width: var(--circle-size);
+            aspect-ratio: 1;
+        }
+
+        .time-circle {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .time-display {
+            font-size: clamp(1.5rem, 5vw, 3.5rem);
+            font-weight: 300;
+            position: absolute;
+            z-index: 2;
+        }
+
+        .time-input {
+            position: absolute;
+            top: 20%;
+            width: 60%;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: clamp(0.8rem, 2.5vw, 1.2rem);
+            text-align: center;
+            z-index: 3;
+        }
+
+        .time-label {
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: clamp(0.7rem, 2vw, 1rem);
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        .progress-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform: rotate(270deg);
+        }
+
+        .progress-ring circle {
+            fill: none;
+            stroke-width: min(8px, 1vw);
+        }
+
+        .progress-ring-bg {
+            stroke: var(--ring-color);
+        }
+
+        .progress-ring-progress {
+            stroke: url(#gradient);
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 4px rgba(64, 224, 208, 0.5));
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .controls {
+            display: flex;
+            gap: clamp(0.5rem, 2vw, 1rem);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: clamp(0.6rem, 2vw, 1rem) clamp(1.5rem, 4vw, 3rem);
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+            background: var(--button-bg);
+            border: none;
+            border-radius: 25px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: min(120px, 40vw);
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .event-title-container {
+            width: 100%;
+            text-align: center;
+        }
+
+        .event-title {
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            color: var(--text-primary);
+            padding: min(0.5rem, 1vw);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+        }
+
+        .event-input {
+            width: min(300px, 80%);
+            padding: clamp(0.6rem, 2vw, 1rem);
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+            background: var(--input-bg);
+            border: 1px solid var(--gradient-middle);
+            border-radius: 8px;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            .countdown-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+            .countdown-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 769px) {
+            .countdown-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-height: 600px) {
+            .container {
+                gap: 1rem;
+            }
+
+            .title {
+                font-size: clamp(1.5rem, 5vh, 3rem);
+            }
+
+            .subtitle {
+                font-size: clamp(1rem, 3vh, 1.5rem);
+            }
+        }
+
+        /* Preserve your existing animations */
+        @keyframes glowRing {
+            0% {
+                filter: drop-shadow(0 0 2px rgba(64, 224, 208, 0.5));
+            }
+
+            50% {
+                filter: drop-shadow(0 0 8px rgba(64, 224, 208, 0.7));
+            }
+
+            100% {
+                filter: drop-shadow(0 0 2px rgba(64, 224, 208, 0.5));
+            }
+        }
+
+        @keyframes tick {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(0.98);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .progress-ring-progress.active {
+            animation: glowRing 1s ease-in-out infinite;
+        }
+
+        .time-circle.ticking {
+            animation: tick 1s linear infinite;
+        }
+
+        /* Remove number input spinners */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="container">
+        <h1 class="title">COUNTDOWN TIMER</h1>
+
+        <div class="subtitle">Time Until</div>
+        <div class="event-title-container">
+            <span class="event-title" id="eventTitle"></span>
+            <i class="fas fa-pencil edit-icon" id="editIcon"></i>
+            <input type="text" class="event-input" value="" placeholder="Enter event name"
+                style="display: none;">
+        </div>
+
+        <div class="countdown-container">
+            <div class="time-segment">
+                <div class="time-circle">
+                    <svg class="progress-ring" width="160" height="160">
+                        <defs>
+                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:var(--gradient-start)" />
+                                <stop offset="50%" style="stop-color:var(--gradient-middle)" />
+                                <stop offset="100%" style="stop-color:var(--gradient-end)" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="progress-ring-bg" cx="80" cy="80" r="75" />
+                        <circle class="progress-ring-progress" cx="80" cy="80" r="75" />
+                    </svg>
+                    <input type="number" class="time-input" value="0" min="0" max="999" data-unit="days">
+                    <div class="time-display">0</div>
+                </div>
+                <div class="time-label">Days</div>
+            </div>
+
+            <div class="time-segment">
+                <div class="time-circle">
+                    <svg class="progress-ring" width="160" height="160">
+                        <defs>
+                            <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:var(--gradient-start)" />
+                                <stop offset="50%" style="stop-color:var(--gradient-middle)" />
+                                <stop offset="100%" style="stop-color:var(--gradient-end)" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="progress-ring-bg" cx="80" cy="80" r="75" />
+                        <circle class="progress-ring-progress" cx="80" cy="80" r="75" />
+                    </svg>
+                    <input type="number" class="time-input" value="0" min="0" max="23" data-unit="hours">
+                    <div class="time-display">00</div>
+                </div>
+                <div class="time-label">Hours</div>
+            </div>
+
+            <div class="time-segment">
+                <div class="time-circle">
+                    <svg class="progress-ring" width="160" height="160">
+                        <defs>
+                            <linearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:var(--gradient-start)" />
+                                <stop offset="50%" style="stop-color:var(--gradient-middle)" />
+                                <stop offset="100%" style="stop-color:var(--gradient-end)" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="progress-ring-bg" cx="80" cy="80" r="75" />
+                        <circle class="progress-ring-progress" cx="80" cy="80" r="75" />
+                    </svg>
+                    <input type="number" class="time-input" value="0" min="0" max="59" data-unit="minutes">
+                    <div class="time-display">00</div>
+                </div>
+                <div class="time-label">Minutes</div>
+            </div>
+
+            <div class="time-segment">
+                <div class="time-circle">
+                    <svg class="progress-ring" width="160" height="160">
+                        <defs>
+                            <linearGradient id="gradient4" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:var(--gradient-start)" />
+                                <stop offset="50%" style="stop-color:var(--gradient-middle)" />
+                                <stop offset="100%" style="stop-color:var(--gradient-end)" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="progress-ring-bg" cx="80" cy="80" r="75" />
+                        <circle class="progress-ring-progress" cx="80" cy="80" r="75" />
+                    </svg>
+                    <input type="number" class="time-input" value="5" min="0" max="59" data-unit="seconds">
+                    <div class="time-display">05</div>
+                </div>
+                <div class="time-label">Seconds</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" id="startBtn">Start</button>
+            <button class="btn" id="resetBtn">Reset</button>
+        </div>
+    </div>
+
+    <!-- Add audio element for notification -->
+    <audio id="notificationSound">
+        <source src="sound.mp3" type="audio/mp3">
+    </audio>
+
+    <script>
+        // Initialize progress rings
+        const circles = document.querySelectorAll('.progress-ring-progress');
+        circles.forEach(circle => {
+            const radius = circle.r.baseVal.value;
+            const circumference = radius * 2 * Math.PI;
+            circle.style.strokeDasharray = `${circumference} ${circumference}`;
+            circle.style.strokeDashoffset = circumference;
+        });
+
+        let countdown;
+        let remainingTime = 0;
+        let totalTime = 0;
+        let isRunning = false;
+
+        // Event title functionality
+        const eventTitle = document.getElementById('eventTitle');
+        const editIcon = document.getElementById('editIcon');
+        const eventInput = document.querySelector('.event-input');
+
+        function enableEditing() {
+            eventTitle.style.display = 'none';
+            eventInput.style.display = 'inline-block';
+            eventInput.value = eventTitle.textContent;
+            eventInput.focus();
+        }
+
+        function saveTitle() {
+            const newTitle = eventInput.value.trim();
+            eventTitle.textContent = newTitle; // Always update the text content, even if empty
+            eventTitle.style.display = 'inline-block';
+            eventInput.style.display = 'none';
+        }
+
+        editIcon.addEventListener('click', enableEditing);
+        eventTitle.addEventListener('click', enableEditing);
+        eventInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                saveTitle();
+            }
+        });
+        eventInput.addEventListener('blur', saveTitle);
+
+        document.querySelectorAll('.time-input').forEach(input => {
+    // Regular input handling
+    input.addEventListener('input', function() {
+        updateInputValue(this);
+    });
+
+    // Keyboard arrow up/down handling
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            const increment = e.key === 'ArrowUp' ? 1 : -1;
+            const newValue = parseInt(this.value || 0) + increment;
+            this.value = Math.min(Math.max(0, newValue), parseInt(this.max));
+            updateInputValue(this);
+        }
+    });
+
+    // Mouse wheel handling
+    input.addEventListener('wheel', function(e) {
+        e.preventDefault();
+        if (!isRunning) { // Only allow changes when timer is not running
+            const increment = e.deltaY < 0 ? 1 : -1;
+            const newValue = parseInt(this.value || 0) + increment;
+            this.value = Math.min(Math.max(0, newValue), parseInt(this.max));
+            updateInputValue(this);
+        }
+    });
+
+    // Add click handlers for the entire time segment
+    const timeSegment = input.closest('.time-segment');
+    timeSegment.addEventListener('click', function(e) {
+        if (!isRunning && e.target.closest('.time-circle')) {
+            const input = this.querySelector('.time-input');
+            input.focus();
+        }
+    });
+});
+
+// Add this helper function right after the above code
+function updateInputValue(input) {
+    if (input.value < 0) input.value = 0;
+    if (input.value > input.max) input.value = input.max;
+    const display = input.parentElement.querySelector('.time-display');
+    display.textContent = input.value.toString().padStart(2, '0');
+}
+        function setProgress(element, percent) {
+            const circle = element.querySelector('.progress-ring-progress');
+            const radius = circle.r.baseVal.value;
+            const circumference = radius * 2 * Math.PI;
+            const offset = circumference - (percent / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+
+            if (percent > 0) {
+                circle.classList.add('active');
+            } else {
+                circle.classList.remove('active');
+            }
+        }
+
+        function startConfetti() {
+            const duration = 1000; // 1 second duration
+            const animationEnd = Date.now() + duration;
+
+            (function frame() {
+                const timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return;
+
+                confetti({
+                    particleCount: 20,
+                    spread: 100,
+                    origin: {y: 0.6},
+                    startVelocity: 30,
+                    colors: ['#40E0D0', '#4169E1', '#0000FF', '#FFFFFF']
+                });
+
+                requestAnimationFrame(frame);
+            }());
+        }
+
+        function playNotificationSound() {
+            const sound = document.getElementById('notificationSound');
+            sound.currentTime = 0;
+            sound.play().catch(error => console.log('Error playing sound:', error));
+        }
+
+        function updateDisplay() {
+            const days = Math.floor(remainingTime / (24 * 60 * 60));
+            const hours = Math.floor((remainingTime % (24 * 60 * 60)) / (60 * 60));
+            const minutes = Math.floor((remainingTime % (60 * 60)) / 60);
+            const seconds = remainingTime % 60;
+
+            const segments = document.querySelectorAll('.time-segment');
+            segments[0].querySelector('.time-display').textContent = days.toString();
+            segments[1].querySelector('.time-display').textContent = hours.toString().padStart(2, '0');
+            segments[2].querySelector('.time-display').textContent = minutes.toString().padStart(2, '0');
+            segments[3].querySelector('.time-display').textContent = seconds.toString().padStart(2, '0');
+
+            // Update progress and animations for each segment
+            segments.forEach((segment, index) => {
+                const circle = segment.querySelector('.time-circle');
+                if (remainingTime > 0) {
+                    circle.classList.add('ticking');
+                } else {
+                    circle.classList.remove('ticking');
+                }
+            });
+
+            // Update progress rings
+            setProgress(segments[0], 100 - ((days / Math.max(1, (totalTime / (24 * 60 * 60)))) * 100));
+            setProgress(segments[1], 100 - ((hours / 24) * 100));
+            setProgress(segments[2], 100 - ((minutes / 60) * 100));
+            setProgress(segments[3], 100 - ((seconds / 60) * 100));
+        }
+
+        function startTimer() {
+            if (!isRunning) {
+                if (!remainingTime) {
+                    const days = parseInt(document.querySelector('[data-unit="days"]').value) || 0;
+                    const hours = parseInt(document.querySelector('[data-unit="hours"]').value) || 0;
+                    const minutes = parseInt(document.querySelector('[data-unit="minutes"]').value) || 0;
+                    const seconds = parseInt(document.querySelector('[data-unit="seconds"]').value) || 0;
+
+                    remainingTime = days * 24 * 60 * 60 + hours * 60 * 60 + minutes * 60 + seconds;
+                    totalTime = remainingTime;
+                }
+
+                if (remainingTime <= 0) return;
+
+                isRunning = true;
+                startBtn.textContent = 'Pause';
+
+                countdown = setInterval(() => {
+                    if (remainingTime > 0) {
+                        remainingTime--;
+                        updateDisplay();
+                    } else {
+                        clearInterval(countdown);
+                        startConfetti();
+                        playNotificationSound();
+                        isRunning = false;
+                        startBtn.textContent = 'Start';
+                    }
+                }, 1000);
+            } else {
+                clearInterval(countdown);
+                isRunning = false;
+                startBtn.textContent = 'Start';
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(countdown);
+            remainingTime = 0;
+            isRunning = false;
+            startBtn.textContent = 'Start';
+
+            document.querySelectorAll('.time-input').forEach(input => {
+                input.value = input.defaultValue;
+                const display = input.parentElement.querySelector('.time-display');
+                display.textContent = input.value.padStart(2, '0');
+            });
+
+            document.querySelectorAll('.time-circle').forEach(circle => {
+                circle.classList.remove('ticking');
+            });
+
+            updateDisplay();
+        }
+
+        document.getElementById('startBtn').addEventListener('click', startTimer);
+        document.getElementById('resetBtn').addEventListener('click', resetTimer);
+
+        updateDisplay();
+    </script>
+</body>
+
+</html>
