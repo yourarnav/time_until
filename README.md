@@ -13,13 +13,6 @@ A modern countdown timer with glowing progress rings, confetti celebrations, and
 - **Responsive Design** - Mobile-first, touch-friendly interface
 - **Live Updates** - Smooth animations and real-time progress
 
-## 🚀 Quick Start
-1. Clone repo:
-```bash
-git clone https://github.com/yourarnav/time_until.git
-```
-2. Open `index.html` in any modern browser
-
 ## 🎮 How to Use
 | Action | Instructions |
 |--------|--------------|
@@ -28,24 +21,6 @@ git clone https://github.com/yourarnav/time_until.git
 | Reset | Click Reset to clear all values |
 | Edit Event | Click title/pencil icon → Type → Press Enter |
 
-## 🎨 Customization
-Modify CSS variables in `:root`:
-```css
-:root {
-  --gradient-start: #40E0D0;  /* Progress ring start color */
-  --gradient-middle: #4169E1; /* Middle gradient color */
-  --background: #0A0A1F;      /* Background color */
-  --ring-color: rgba(255,255,255,0.2); /* Ring base color */
-}
-```
-
-**Replace Notification Sound**:
-1. Add your `sound.mp3` file
-2. Update audio source in HTML:
-```html
-<source src="your-sound.mp3" type="audio/mp3">
-```
-
 ## 🛠️ Tech Stack
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
@@ -53,26 +28,11 @@ Modify CSS variables in `:root`:
 ![Confetti.js](https://img.shields.io/badge/Confetti.js-FF69B4?style=for-the-badge)
 ![Font Awesome](https://img.shields.io/badge/Font_Awesome-528DD7?style=for-the-badge&logo=fontawesome&logoColor=white)
 
-## 🤝 Contributing
-1. Fork the repository
-2. Create your feature branch:
-```bash
-git checkout -b feature/AmazingFeature
-```
-3. Commit changes:
-```bash
-git commit -m 'Add some AmazingFeature'
-```
-4. Push to branch:
-```bash
-git push origin feature/AmazingFeature
-```
-5. Open a Pull Request
-
-## 📜 License
-Distributed under the MIT License. See `LICENSE` for details.
 
 ---
 
 Made with ❤️ by [Arnav Attri](https://github.com/yourarnav)
 [🔗 Live Demo](https://yourarnav.github.io/time_until) | [📧 Contact](https://github.com/yourarnav) | [🐛 Report Issue](https://github.com/yourarnav/time_until/issues)
+---
+## 📜 License
+Distributed under the MIT License. See `LICENSE` for details.
