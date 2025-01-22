@@ -32,7 +32,7 @@ A modern countdown timer with glowing progress rings, confetti celebrations, and
 ---
 
 Made with ❤️ by [Arnav Attri](https://github.com/yourarnav)
-[🔗 Live Demo](https://yourarnav.github.io/time_until) | [📧 Contact](https://github.com/yourarnav) | [🐛 Report Issue](https://github.com/yourarnav/time_until/issues)
+ [📧 Contact](https://github.com/yourarnav) | [🐛 Report Issue](https://github.com/yourarnav/time_until/issues)
 ---
 ## 📜 License
 Distributed under the MIT License. See `LICENSE` for details.
