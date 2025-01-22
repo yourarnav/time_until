@@ -4,6 +4,12 @@
 
 A modern countdown timer with glowing progress rings, confetti celebrations, and dynamic event tracking. Perfect for milestones, deadlines, or special moments.
 
+---
+
+[🔗 Live Demo](https://yourarnav.github.io/time_until) 
+
+---
+
 ## 🌟 Features
 - **Gradient Progress Rings** - Animated circular timers with custom gradients
 - **Editable Event Titles** - Click-to-edit with auto-save functionality
