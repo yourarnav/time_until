@@ -1,11 +1,11 @@
-# Chrono Nova ⏳✨
+# Chrono Nova ⏳✨ [🔗 Live Demo](https://yourarnav.github.io/time_until) 
 
 ![Chrono Nova Preview](https://i.imgur.com/psijfqz.png)
 
 A modern countdown timer with glowing progress rings, confetti celebrations, and dynamic event tracking. Perfect for milestones, deadlines, or special moments.
 
 
-[🔗 Live Demo](https://yourarnav.github.io/time_until) 
+---
 
 
 ## 🌟 Features
