@@ -1,6 +1,6 @@
 # Chrono Nova ⏳✨
 
-![Chrono Nova Preview](https://via.placeholder.com/800x500.png?text=Add+Your+App+Screenshot+Here)
+![Chrono Nova Preview](https://imgur.com/a/K2Z3fcG))
 
 A modern countdown timer with glowing progress rings, confetti celebrations, and dynamic event tracking. Perfect for milestones, deadlines, or special moments.
 
